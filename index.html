@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday ❤️</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Comic Sans MS', 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  text-align: center;
+  color: #333;
+  overflow-x: hidden;
+}
+
+.container { padding: 30px 15px; }
+h1 { font-size: 2.5em; }
+
+/* ===== SLIDER ===== */
+.slider {
+  width: 260px;
+  height: 260px;
+  margin: 25px auto;
+  overflow: hidden;
+  border-radius: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  touch-action: pan-y;
+}
+
+.slides {
+  display: flex;
+  height: 100%;
+}
+
+.slides img {
+  width: 260px;
+  height: 260px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* ===== UI ===== */
+.cake { font-size: 110px; cursor: pointer; }
+
+.message {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  display: none;
+}
+
+button {
+  background: #ff6f91;
+  border: none;
+  padding: 14px 28px;
+  font-size: 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  color: white;
+  position: relative;
+  transition: left 0.3s ease, top 0.3s ease;
+}
+
+@keyframes shake {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1) rotate(2deg); }
+  100% { transform: scale(1); }
+}
+
+/* ===== ANIMATION ===== */
+.balloon {
+  position: fixed;
+  bottom: -100px;
+  font-size: 40px;
+  animation: fly 8s linear infinite;
+}
+
+@keyframes fly { to { transform: translateY(-120vh); } }
+
+.confetti {
+  position: fixed;
+  font-size: 22px;
+  animation: fall 4s linear infinite;
+}
+
+@keyframes fall { to { transform: translateY(110vh); } }
+
+footer { margin-top: 40px; font-size: 14px; opacity: 0.7; }
+</style>
+</head>
+
+<body>
+
+<audio id="song" loop>
+  <source src="lagu.mp3" type="audio/mpeg">
+</audio>
+
+<!-- SURPRISE -->
+<div id="surpriseScreen" style="
+position:fixed; inset:0;
+background:linear-gradient(135deg,#000,#ff4f7a);
+display:flex; flex-direction:column;
+justify-content:center; align-items:center;
+color:white; z-index:9999;">
+<h1>BUAT ORANG PALING CANTIK 💖</h1>
+<button id="runBtn">PENCET AKU KALO BISA 😝</button>
+</div>
+
+<!-- DATE -->
+<div id="dateScreen" style="
+position:fixed; inset:0;
+background:linear-gradient(135deg,#ff4f7a,#ff9a9e);
+display:none; justify-content:center;
+align-items:center; color:white;
+font-size:4em; z-index:9998;">
+<div id="dateText"></div>
+</div>
+
+<!-- MAIN -->
+<div class="container" id="mainContent" style="display:none;">
+<marquee scrollamount="10">
+<h1 style="color:#ff4f7a;">🎀 HAPPY BIRTHDAY CINTAKU 🎀</h1>
+</marquee>
+
+<!-- SLIDER LOOP -->
+<div class="slider" id="slider">
+  <div class="slides" id="slides">
+    <img src="foto6.jpeg">
+    <img src="foto1.jpeg">
+    <img src="foto2.jpeg">
+    <img src="foto3.jpeg">
+    <img src="foto4.jpeg">
+    <img src="foto5.jpeg">
+    <img src="foto6.jpeg">
+    <img src="foto1.jpeg">
+  </div>
+</div>
+
+<p id="typingText" style="font-size:18px; min-height:120px;"></p>
+
+<div class="cake" onclick="showMessage()">🎂</div>
+
+<div class="message" id="messageBox">
+<h2>💖 Untuk Kamu 💖</h2>
+<p>
+Selamat ulang tahun beb, manusia paling cantik hehe
+
+Hari ini bukan cuma hari ulang tahunmu, tapi hari di mana dunia diberkahi dengan senyumanmu. Terima kasih sudah hadir, membuat hari-hariku lebih berwarna, dan menjadi alasan aku tersenyum tanpa henti.
+
+Semoga semua mimpimu terwujud, setiap langkahmu dipenuhi kebahagiaan, dan setiap harimu selalu dipenuhi cinta dan tawa.
+</p>
+<strong>— Bryllent ganteng</strong>
+</div>
+
+<button onclick="lovePopup()">Klik kalau sayang aku</button>
+
+<footer>Dibuat khusus dengan cinta ❤️</footer>
+</div>
+
+<script>
+/* ===== SURPRISE ===== */
+const runBtn = document.getElementById("runBtn");
+const song = document.getElementById("song");
+const surpriseScreen = document.getElementById("surpriseScreen");
+const dateScreen = document.getElementById("dateScreen");
+const dateText = document.getElementById("dateText");
+const mainContent = document.getElementById("mainContent");
+const typingText = document.getElementById("typingText");
+const messageBox = document.getElementById("messageBox");
+
+runBtn.onclick = () => {
+  song.play();
+  surpriseScreen.style.display = "none";
+  dateScreen.style.display = "flex";
+
+  const seq = ["13", "JANUARI", "2026", "LHAS JEAN DEWI 💖"];
+  let i = 0;
+  function showDate(){
+    dateText.innerText = seq[i++];
+    if(i < seq.length) setTimeout(showDate, 1200);
+    else setTimeout(() => {
+      dateScreen.style.display = "none";
+      mainContent.style.display = "block";
+      typeText();
+      confettiBoom();
+    }, 1500);
+  }
+  showDate();
+};
+
+/* ===== TYPING ===== */
+function typeText(){
+  const text = "Hari ini bukan hari biasa. Hari ini hari lahir manusia paling cantik, paling lucu, dan paling aku sayang di dunia 💕";
+  let i = 0;
+  const el = typingText;
+  const timer = setInterval(()=>{
+    el.innerHTML += text.charAt(i++);
+    if(i >= text.length) clearInterval(timer);
+  }, 45);
+}
+
+/* ===== MESSAGE ===== */
+function showMessage(){
+  messageBox.style.display = "block";
+  confettiBoom();
+}
+function lovePopup(){ alert("LOPYU"); }
+
+/* ===== CONFETTI ===== */
+function confettiBoom(){
+  for(let i=0;i<30;i++){
+    const c = document.createElement("div");
+    c.className = "confetti";
+    c.innerHTML = "💖";
+    c.style.left = Math.random()*100+"vw";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+/* ===== BALLOON ===== */
+setInterval(()=>{
+  const b=document.createElement("div");
+  b.className="balloon";
+  b.innerHTML = Math.random()>0.5 ? "🎈":"🎉";
+  b.style.left = Math.random()*100+"vw";
+  document.body.appendChild(b);
+  setTimeout(()=>b.remove(),8000);
+},800);
+
+/* ===== INFINITE SLIDER ===== */
+const slider = document.getElementById("slider");
+const slides = document.getElementById("slides");
+const slideWidth = 260;
+let index = 1;
+let startX = 0;
+let isDown = false;
+
+slides.style.transform = `translateX(${-slideWidth}px)`;
+
+slider.addEventListener("mousedown", start);
+slider.addEventListener("mousemove", move);
+slider.addEventListener("mouseup", end);
+slider.addEventListener("mouseleave", end);
+
+slider.addEventListener("touchstart", start);
+slider.addEventListener("touchmove", move);
+slider.addEventListener("touchend", end);
+
+function start(e){
+  isDown = true;
+  startX = getX(e);
+  slides.style.transition = "none";
+}
+
+function move(e){
+  if(!isDown) return;
+  const x = getX(e);
+  slides.style.transform = `translateX(${x - startX - index * slideWidth}px)`;
+}
+
+function end(e){
+  if(!isDown) return;
+  isDown = false;
+  const diff = getX(e) - startX;
+
+  if(diff < -60) index++;
+  if(diff > 60) index--;
+
+  slides.style.transition = "transform 0.3s ease";
+  slides.style.transform = `translateX(${-index * slideWidth}px)`;
+
+  slides.addEventListener("transitionend", ()=>{
+    if(index === 0){
+      slides.style.transition = "none";
+      index = slides.children.length - 2;
+      slides.style.transform = `translateX(${-index * slideWidth}px)`;
+    }
+    if(index === slides.children.length - 1){
+      slides.style.transition = "none";
+      index = 1;
+      slides.style.transform = `translateX(${-index * slideWidth}px)`;
+    }
+  }, {once:true});
+}
+
+function getX(e){
+  return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
+}
+
+/* ===== TOMBOL BERGERAK (desktop & HP) ===== */
+function moveRunButtonRandom(){
+  const maxX = window.innerWidth - runBtn.offsetWidth;
+  const maxY = window.innerHeight - runBtn.offsetHeight;
+  runBtn.style.position = "absolute";
+  runBtn.style.left = Math.random() * maxX + "px";
+  runBtn.style.top = Math.random() * maxY + "px";
+}
+
+// Gerak random setiap 2 detik
+setInterval(moveRunButtonRandom, 2000);
+
+// Bergerak saat disentuh / diklik
+runBtn.addEventListener("mouseenter", moveRunButtonRandom);
+runBtn.addEventListener("touchstart", moveRunButtonRandom);
+
+</script>
+</body>
+</html>
