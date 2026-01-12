@@ -258,36 +258,47 @@ function start(e){
   slides.style.transition = "none";
 }
 
+let currentTranslate = -slideWidth; // posisi awal
+let prevTranslate = -slideWidth;
+
 function move(e){
   if(!isDown) return;
   const x = getX(e);
-  slides.style.transform = `translateX(${x - startX - index * slideWidth}px)`;
+  const diff = x - startX;
+  currentTranslate = prevTranslate + diff;
+  slides.style.transform = `translateX(${currentTranslate}px)`;
 }
 
 function end(e){
   if(!isDown) return;
   isDown = false;
-  const diff = getX(e) - startX;
+  const movedBy = currentTranslate - prevTranslate;
 
-  if(diff < -60) index++;
-  if(diff > 60) index--;
+  if(movedBy < -60) index++;
+  if(movedBy > 60) index--;
 
   slides.style.transition = "transform 0.3s ease";
-  slides.style.transform = `translateX(${-index * slideWidth}px)`;
+  currentTranslate = -index * slideWidth;
+  slides.style.transform = `translateX(${currentTranslate}px)`;
+  prevTranslate = currentTranslate;
 
   slides.addEventListener("transitionend", ()=>{
+    slides.style.transition = "none";
     if(index === 0){
-      slides.style.transition = "none";
       index = slides.children.length - 2;
-      slides.style.transform = `translateX(${-index * slideWidth}px)`;
+      currentTranslate = -index * slideWidth;
+      prevTranslate = currentTranslate;
+      slides.style.transform = `translateX(${currentTranslate}px)`;
     }
     if(index === slides.children.length - 1){
-      slides.style.transition = "none";
       index = 1;
-      slides.style.transform = `translateX(${-index * slideWidth}px)`;
+      currentTranslate = -index * slideWidth;
+      prevTranslate = currentTranslate;
+      slides.style.transform = `translateX(${currentTranslate}px)`;
     }
   }, {once:true});
 }
+
 
 function getX(e){
   return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
@@ -312,3 +323,4 @@ runBtn.addEventListener("touchstart", moveRunButtonRandom);
 </script>
 </body>
 </html>
+
