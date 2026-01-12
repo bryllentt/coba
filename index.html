@@ -26,7 +26,6 @@ h1 { font-size: 2.5em; }
   overflow: hidden;
   border-radius: 25px;
   box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-  touch-action: pan-y;
 }
 
 .slides {
@@ -127,7 +126,7 @@ font-size:4em; z-index:9998;">
 <h1 style="color:#ff4f7a;">🎀 HAPPY BIRTHDAY CINTAKU 🎀</h1>
 </marquee>
 
-<!-- SLIDER LOOP -->
+<!-- SLIDER LOOP OTOMATIS -->
 <div class="slider" id="slider">
   <div class="slides" id="slides">
     <img src="foto6.jpeg">
@@ -233,94 +232,33 @@ setInterval(()=>{
   setTimeout(()=>b.remove(),8000);
 },800);
 
-/* ===== INFINITE SLIDER ===== */
+/* ===== SLIDER OTOMATIS ===== */
 const slider = document.getElementById("slider");
 const slides = document.getElementById("slides");
 const slideWidth = 260;
-let index = 1;
-let startX = 0;
-let isDown = false;
+let autoIndex = 1;
 
 slides.style.transform = `translateX(${-slideWidth}px)`;
+slides.style.transition = "transform 0.5s ease";
 
-slider.addEventListener("mousedown", start);
-slider.addEventListener("mousemove", move);
-slider.addEventListener("mouseup", end);
-slider.addEventListener("mouseleave", end);
-
-slider.addEventListener("touchstart", start);
-slider.addEventListener("touchmove", move);
-slider.addEventListener("touchend", end);
-
-let index = 1;
-let startX = 0;
-let isDown = false;
-let currentTranslate = -slideWidth;
-let animationID = 0;
-
-slides.style.transform = `translateX(${-slideWidth}px)`;
-
-function start(e){
-  isDown = true;
-  startX = getX(e);
-  slides.style.transition = "none";
+function moveSlide(){
+  autoIndex++;
+  slides.style.transition = "transform 0.5s ease";
+  slides.style.transform = `translateX(${-autoIndex * slideWidth}px)`;
 }
 
-function move(e){
-  if(!isDown) return;
-  const x = getX(e);
-  const diff = x - startX;
-  slides.style.transform = `translateX(${-index * slideWidth + diff}px)`;
-}
-
-function end(e){
-  if(!isDown) return;
-  isDown = false;
-  const x = getX(e);
-  const movedBy = x - startX;
-
-  // Sensitifnya geser
-  if(movedBy < -50) index++;
-  else if(movedBy > 50) index--;
-
-  slides.style.transition = "transform 0.3s ease";
-  slides.style.transform = `translateX(${-index * slideWidth}px)`;
-}
-
-// infinite loop
 slides.addEventListener("transitionend", ()=>{
   slides.style.transition = "none";
-  if(index === 0){
-    index = slides.children.length - 2;
-    slides.style.transform = `translateX(${-index * slideWidth}px)`;
-  }
-  if(index === slides.children.length - 1){
-    index = 1;
-    slides.style.transform = `translateX(${-index * slideWidth}px)`;
+  if(autoIndex === slides.children.length - 1){
+    autoIndex = 1;
+    slides.style.transform = `translateX(${-autoIndex * slideWidth}px)`;
   }
 });
 
-// mouse & touch events
-slider.addEventListener("mousedown", start);
-slider.addEventListener("mousemove", move);
-slider.addEventListener("mouseup", end);
-slider.addEventListener("mouseleave", end);
+// Jalankan otomatis tiap 2 detik
+setInterval(moveSlide, 2000);
 
-slider.addEventListener("touchstart", start);
-slider.addEventListener("touchmove", move);
-slider.addEventListener("touchend", end);
-
-function getX(e){
-  return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
-}
-
-
-
-function getX(e){
-  return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
-}
-
-/* ===== TOMBOL BERGERAK (desktop & HP) ===== */
+/* ===== TOMBOL BERGERAK ===== */
 function moveRunButtonRandom(){
   const maxX = window.innerWidth - runBtn.offsetWidth;
   const maxY = window.innerHeight - runBtn.offsetHeight;
@@ -339,5 +277,3 @@ runBtn.addEventListener("touchstart", moveRunButtonRandom);
 </script>
 </body>
 </html>
-
-
