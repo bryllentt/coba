@@ -252,52 +252,68 @@ slider.addEventListener("touchstart", start);
 slider.addEventListener("touchmove", move);
 slider.addEventListener("touchend", end);
 
+let index = 1;
+let startX = 0;
+let isDown = false;
+let currentTranslate = -slideWidth;
+let animationID = 0;
+
+slides.style.transform = `translateX(${-slideWidth}px)`;
+
 function start(e){
   isDown = true;
   startX = getX(e);
   slides.style.transition = "none";
 }
 
-let currentTranslate = -slideWidth; // posisi awal
-let prevTranslate = -slideWidth;
-
 function move(e){
   if(!isDown) return;
   const x = getX(e);
   const diff = x - startX;
-  currentTranslate = prevTranslate + diff;
-  slides.style.transform = `translateX(${currentTranslate}px)`;
+  slides.style.transform = `translateX(${-index * slideWidth + diff}px)`;
 }
 
 function end(e){
   if(!isDown) return;
   isDown = false;
-  const movedBy = currentTranslate - prevTranslate;
+  const x = getX(e);
+  const movedBy = x - startX;
 
-  if(movedBy < -60) index++;
-  if(movedBy > 60) index--;
+  // Sensitifnya geser
+  if(movedBy < -50) index++;
+  else if(movedBy > 50) index--;
 
   slides.style.transition = "transform 0.3s ease";
-  currentTranslate = -index * slideWidth;
-  slides.style.transform = `translateX(${currentTranslate}px)`;
-  prevTranslate = currentTranslate;
-
-  slides.addEventListener("transitionend", ()=>{
-    slides.style.transition = "none";
-    if(index === 0){
-      index = slides.children.length - 2;
-      currentTranslate = -index * slideWidth;
-      prevTranslate = currentTranslate;
-      slides.style.transform = `translateX(${currentTranslate}px)`;
-    }
-    if(index === slides.children.length - 1){
-      index = 1;
-      currentTranslate = -index * slideWidth;
-      prevTranslate = currentTranslate;
-      slides.style.transform = `translateX(${currentTranslate}px)`;
-    }
-  }, {once:true});
+  slides.style.transform = `translateX(${-index * slideWidth}px)`;
 }
+
+// infinite loop
+slides.addEventListener("transitionend", ()=>{
+  slides.style.transition = "none";
+  if(index === 0){
+    index = slides.children.length - 2;
+    slides.style.transform = `translateX(${-index * slideWidth}px)`;
+  }
+  if(index === slides.children.length - 1){
+    index = 1;
+    slides.style.transform = `translateX(${-index * slideWidth}px)`;
+  }
+});
+
+// mouse & touch events
+slider.addEventListener("mousedown", start);
+slider.addEventListener("mousemove", move);
+slider.addEventListener("mouseup", end);
+slider.addEventListener("mouseleave", end);
+
+slider.addEventListener("touchstart", start);
+slider.addEventListener("touchmove", move);
+slider.addEventListener("touchend", end);
+
+function getX(e){
+  return e.type.includes("mouse") ? e.pageX : e.touches[0].clientX;
+}
+
 
 
 function getX(e){
@@ -323,4 +339,5 @@ runBtn.addEventListener("touchstart", moveRunButtonRandom);
 </script>
 </body>
 </html>
+
 
